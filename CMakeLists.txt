@@ -18,17 +18,10 @@ endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 ExternalProject_Add(
   project_f2c
   PREFIX ${CMAKE_CURRENT_BINARY_DIR}/f2c
-  GIT_REPOSITORY git://github.com/juanjosegarciaripoll/f2c.git
-  GIT_TAG d01fe07
-  UPDATE_COMMAND ""
-  BUILD_IN_SOURCE 1
-  CONFIGURE_COMMAND ./autogen.sh && ./configure --prefix=${NGSOLVE_INSTALL_DIR}
-  BUILD_COMMAND make -j4
-  INSTALL_COMMAND make install
-  LOG_DOWNLOAD 0
-  LOG_BUILD 0
-  LOG_INSTALL 0
-  )
+  GIT_REPOSITORY git://github.com/mhochsteger/f2c.git
+  GIT_TAG bbb7423945ff224f1d69ee3d267dcad6859972f0
+  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${NGSOLVE_INSTALL_DIR}
+)
 
 ################################
 # Build actual project
