@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.1)
 find_package(NGSolve CONFIG REQUIRED)
 
 find_library(F2C_LIBRARY f2c REQUIRED HINTS ${NGSOLVE_LIBRARY_DIR})
-find_program(F2C_COMMAND f2c REQUIRED HINTS ${NGSOLVE_LIBRARY_DIR})
+find_program(F2C_COMMAND f2c REQUIRED HINTS ${NGSOLVE_BINARY_DIR})
 
 macro( fetch_and_convert_slatec_sources slatec_function )
     file(DOWNLOAD http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=slatec%2Fsrc%2F${slatec_function}.f ${CMAKE_CURRENT_BINARY_DIR}/${slatec_function}.tgz)
