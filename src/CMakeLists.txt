@@ -14,6 +14,9 @@ endmacro( fetch_and_convert_slatec_sources )
 
 fetch_and_convert_slatec_sources(zbesi)
 fetch_and_convert_slatec_sources(gamln)
+file(DOWNLOAD http://www.netlib.org/blas/i1mach.f ${CMAKE_CURRENT_BINARY_DIR}/slatec/src/i1mach.f)
+file(DOWNLOAD http://www.netlib.org/blas/r1mach.f ${CMAKE_CURRENT_BINARY_DIR}/slatec/src/r1mach.f)
+file(DOWNLOAD http://www.netlib.org/blas/d1mach.f ${CMAKE_CURRENT_BINARY_DIR}/slatec/src/d1mach.f)
 
 file(GLOB SLATEC_SOURCES_FORTRAN ${CMAKE_CURRENT_BINARY_DIR}/slatec/src/*.f )
 execute_process(COMMAND ${F2C_COMMAND} ${SLATEC_SOURCES_FORTRAN} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/slatec/src)
