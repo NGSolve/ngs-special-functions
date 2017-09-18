@@ -27,13 +27,11 @@ namespace ngfem {
 
         double Evaluate (const BaseMappedIntegrationPoint & ip) const override 
         {
-            //         throw Exception("SpecialCoefficientFunction_ZBESI::Evaluate called");
-            Complex z = EvaluateComplex(ip);
-            return z.real();
+            throw Exception("SpecialCoefficientFunction_ZBESI::Evaluate called");
         }
 
 
-        Complex EvaluateComplex (const BaseMappedIntegrationPoint & ip) const override
+        virtual void Evaluate(const BaseMappedIntegrationPoint & ip, FlatVector<Complex> result) const override
         {
             Complex z = arg->EvaluateComplex(ip);
             f2c::doublereal zr,zi;
@@ -48,7 +46,7 @@ namespace ngfem {
             if(nz>0) cout << "Number of underflows: " << nz << endl;
             if(ierr>0) cout << "Error: " << ierr << endl;
 
-            return Complex(cyr, cyi);
+            result(0) = Complex(cyr, cyi);
         }
     };
 
