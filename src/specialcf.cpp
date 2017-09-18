@@ -83,7 +83,7 @@ namespace ngfem {
 PYBIND11_MODULE(special_functions, m) {
     m.def("Bessel", [] (shared_ptr<ngfem::CoefficientFunction> arg, double fnu, int kode, int n) -> shared_ptr<ngfem::CoefficientFunction>
           {
-          return make_shared<ngfem::SpecialCoefficientFunction_ZBESI>(arg);
+          return make_shared<ngfem::SpecialCoefficientFunction_ZBESI>(arg, fnu, kode, n);
           }, py::arg("Z"), py::arg("FNU")=0, py::arg("KODE")=1, py::arg("N")=2, py::doc(R"DOCSTRING_(
 
 Input
