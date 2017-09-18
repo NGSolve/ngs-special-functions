@@ -19,9 +19,9 @@ namespace ngfem {
 
       public:
 
-        SpecialCoefficientFunction_ZBESI(shared_ptr<CoefficientFunction> arg_, f2c::doublereal fnu_=1, f2c::integer kode_=2, f2c::integer n_ =2)
+        SpecialCoefficientFunction_ZBESI(shared_ptr<CoefficientFunction> arg_, f2c::doublereal fnu_=1, f2c::integer kode_=2)
           : CoefficientFunction(1, true),
-          arg(arg_), fnu(fnu_), kode(kode_), n(n_)
+          arg(arg_), fnu(fnu_), kode(kode_), n(1)
         {
         }
 
@@ -79,26 +79,24 @@ namespace ngfem {
 #undef abs
 #include <python_ngstd.hpp>
 PYBIND11_MODULE(special_functions, m) {
-    m.def("Bessel", [] (shared_ptr<ngfem::CoefficientFunction> arg, double fnu, int kode, int n) -> shared_ptr<ngfem::CoefficientFunction>
+    m.def("Bessel", [] (shared_ptr<ngfem::CoefficientFunction> arg, double fnu, int kode) -> shared_ptr<ngfem::CoefficientFunction>
           {
-          return make_shared<ngfem::SpecialCoefficientFunction_ZBESI>(arg, fnu, kode, n);
-          }, py::arg("Z"), py::arg("FNU")=0, py::arg("KODE")=1, py::arg("N")=2, py::doc(R"DOCSTRING_(
+          return make_shared<ngfem::SpecialCoefficientFunction_ZBESI>(arg, fnu, kode);
+          }, py::arg("Z"), py::arg("FNU")=0, py::arg("KODE")=1, py::doc(R"DOCSTRING_(
 
 Input
   Z      - Complex argument
-  FNU    - DOUBLE PRECISION initial order, FNU>=0
+  FNU    - DOUBLE PRECISION order, FNU>=0
   KODE   - A parameter to indicate the scaling option
            KODE=1  returns
-                   CY(L)=I(FNU+L-1,Z), L=1,...,N
+                   CY=I(FNU,Z)
                =2  returns
-                   CY(L)=exp(-abs(X))*I(FNU+L-1,Z), L=1,...,N
+                   CY=exp(-abs(X))*I(FNU,Z)
                    where X=Re(Z)
-  N      - Number of terms in the sequence, N>=1
 )DOCSTRING_")
     );
     m.def("Gamma", [] (shared_ptr<ngfem::CoefficientFunction> arg) -> shared_ptr<ngfem::CoefficientFunction>
           {
           return make_shared<ngfem::SpecialCoefficientFunction_DGAMLN>(arg);
-
           });
 }
