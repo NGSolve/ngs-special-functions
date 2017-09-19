@@ -45,10 +45,6 @@ double gamln(double x_)
   return res;
 }
 
-#undef min
-#undef max
-#undef abs
-#include <python_ngstd.hpp>
 PYBIND11_MODULE(special_functions, m) {
     py::doc doc_string = "Same as in scipy.special";
     ExportPythonSpecialCF(m, "gammaln", gamln, doc_string);
