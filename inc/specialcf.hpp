@@ -32,7 +32,7 @@ namespace ngfem {
       public:
         T_SpecialCoefficientFunction( shared_ptr<CoefficientFunction> arg_, TFunc func_, TArgs ... args )
           : CoefficientFunction(1, is_complex),
-            func(func_), arg(arg_), parameters({}, args...)
+            func(func_), arg(arg_), parameters(TFirstArg(), args...)
         {
         }
 

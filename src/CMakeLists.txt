@@ -1,6 +1,7 @@
 project(ngs_special_functions)
 
 cmake_minimum_required(VERSION 3.1)
+set(CMAKE_CXX_STANDARD 17)
 
 find_package(NGSolve CONFIG REQUIRED)
 
@@ -13,6 +14,8 @@ macro( fetch_and_convert_slatec_sources slatec_function )
 endmacro( fetch_and_convert_slatec_sources )
 
 fetch_and_convert_slatec_sources(zbesi)
+fetch_and_convert_slatec_sources(zbesj)
+fetch_and_convert_slatec_sources(zbesk)
 fetch_and_convert_slatec_sources(gamln)
 file(DOWNLOAD http://www.netlib.org/blas/i1mach.f ${CMAKE_CURRENT_BINARY_DIR}/slatec/src/i1mach.f)
 file(DOWNLOAD http://www.netlib.org/blas/r1mach.f ${CMAKE_CURRENT_BINARY_DIR}/slatec/src/r1mach.f)

@@ -1,9 +1,14 @@
 #include <specialcf.hpp>
 
-extern "C" /* Subroutine */ int zbesi_(f2c::doublereal *zr, f2c::doublereal *zi, const f2c::doublereal *fnu, const f2c::integer *kode, const f2c::integer *n, f2c::doublereal *cyr, f2c::doublereal *cyi, f2c::integer * nz, f2c::integer *ierr);
-extern "C" /* Subroutine */ f2c::doublereal gamln_(f2c::real *z__, f2c::integer *ierr);
+extern "C" {
+int zbesi_(f2c::doublereal *zr, f2c::doublereal *zi, const f2c::doublereal *fnu, const f2c::integer *kode, const f2c::integer *n, f2c::doublereal *cyr, f2c::doublereal *cyi, f2c::integer * nz, f2c::integer *ierr);
+int zbesj_(f2c::doublereal *zr, f2c::doublereal *zi, const f2c::doublereal *fnu, const f2c::integer *kode, const f2c::integer *n, f2c::doublereal *cyr, f2c::doublereal *cyi, f2c::integer * nz, f2c::integer *ierr);
+int zbesk_(f2c::doublereal *zr, f2c::doublereal *zi, const f2c::doublereal *fnu, const f2c::integer *kode, const f2c::integer *n, f2c::doublereal *cyr, f2c::doublereal *cyi, f2c::integer * nz, f2c::integer *ierr);
+f2c::doublereal gamln_(f2c::real *z__, f2c::integer *ierr);
+}
 
-Complex zbesi( Complex z, double order, int kode_ )
+template <typename TFunc>
+Complex zbesIJK( TFunc func, Complex z, double order, int kode_ )
 {
   // input arguments 
   f2c::doublereal fnu = order;
@@ -17,12 +22,19 @@ Complex zbesi( Complex z, double order, int kode_ )
   f2c::integer nz;
   f2c::integer ierr;
 
-  zbesi_(&zr, &zi, &fnu, &kode, &n, &cyr, &cyi, &nz, &ierr);
+  func(&zr, &zi, &fnu, &kode, &n, &cyr, &cyi, &nz, &ierr);
   if(nz>0) cout << "Number of underflows: " << nz << endl;
   if(ierr>0) cout << "Error: " << ierr << endl;
 
   return Complex(cyr, cyi);
 }
+
+Complex iv ( Complex z, double order) { return zbesIJK(zbesi_, z, order, 1 ); }
+Complex ive( Complex z, double order) { return zbesIJK(zbesi_, z, order, 2 ); }
+Complex jv ( Complex z, double order) { return zbesIJK(zbesj_, z, order, 1 ); }
+Complex jve( Complex z, double order) { return zbesIJK(zbesj_, z, order, 2 ); }
+Complex kv ( Complex z, double order) { return zbesIJK(zbesk_, z, order, 1 ); }
+Complex kve( Complex z, double order) { return zbesIJK(zbesk_, z, order, 2 ); }
 
 double gamln(double x_)
 {
@@ -40,17 +52,11 @@ double gamln(double x_)
 PYBIND11_MODULE(special_functions, m) {
     ExportPythonSpecialCF(m, "Gamma", gamln);
 
-    ExportPythonSpecialCF(m, "Bessel", zbesi,
-           py::arg("z"), py::arg("order")=0, py::arg("kode")=1, py::doc(R"DOCSTRING_(
-Complex Bessel functions
-Input
-  z      - Complex argument
-  order  - DOUBLE PRECISION order>=0
-  kode   - A parameter to indicate the scaling option
-           kode=1  returns
-                   CY=I(order,z)
-               =2  returns
-                   CY=exp(-abs(X))*I(order,z)
-                   where X=Re(z)
-)DOCSTRING_"));
+    py::doc docu = "Same as scipy.special.{name}, except that the order of the arguments is swapped.";
+    ExportPythonSpecialCF(m, "iv",  iv,  py::arg("z"), py::arg("order")=0, docu);
+    ExportPythonSpecialCF(m, "ive", ive, py::arg("z"), py::arg("order")=0, docu);
+    ExportPythonSpecialCF(m, "jv",  jv,  py::arg("z"), py::arg("order")=0, docu);
+    ExportPythonSpecialCF(m, "jve", jve, py::arg("z"), py::arg("order")=0, docu);
+    ExportPythonSpecialCF(m, "kv",  kv,  py::arg("z"), py::arg("order")=0, docu);
+    ExportPythonSpecialCF(m, "kve", kve, py::arg("z"), py::arg("order")=0, docu);
 }
