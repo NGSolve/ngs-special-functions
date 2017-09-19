@@ -50,9 +50,10 @@ double gamln(double x_)
 #undef abs
 #include <python_ngstd.hpp>
 PYBIND11_MODULE(special_functions, m) {
-    ExportPythonSpecialCF(m, "Gamma", gamln);
+    py::doc doc_string = "Same as in scipy.special";
+    ExportPythonSpecialCF(m, "gammaln", gamln, doc_string);
 
-    py::doc docu = "Same as scipy.special.{name}, except that the order of the arguments is swapped.";
+    py::doc docu = "Same as in scipy.special, except that the order of the arguments is swapped.";
     ExportPythonSpecialCF(m, "iv",  iv,  py::arg("z"), py::arg("order")=0, docu);
     ExportPythonSpecialCF(m, "ive", ive, py::arg("z"), py::arg("order")=0, docu);
     ExportPythonSpecialCF(m, "jv",  jv,  py::arg("z"), py::arg("order")=0, docu);
