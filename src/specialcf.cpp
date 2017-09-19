@@ -1,7 +1,9 @@
 #include <specialcf.hpp>
+#include <boost/math/special_functions/gamma.hpp>
 
 extern "C" /* Subroutine */ int zbesi_(f2c::doublereal *zr, f2c::doublereal *zi, const f2c::doublereal *fnu, const f2c::integer *kode, const f2c::integer *n, f2c::doublereal *cyr, f2c::doublereal *cyi, f2c::integer * nz, f2c::integer *ierr);
-extern "C" /* Subroutine */ f2c::doublereal gamln_(f2c::real *z__, f2c::integer *ierr);
+
+// extern "C" /* Subroutine */ f2c::doublereal gamln_(f2c::real *z__, f2c::integer *ierr);
 
 Complex zbesi( Complex z, double order, int kode_ )
 {
@@ -24,24 +26,26 @@ Complex zbesi( Complex z, double order, int kode_ )
   return Complex(cyr, cyi);
 }
 
-double gamln(double x_)
-{
-  f2c::real x = x_;
-  f2c::integer ierr;
-  double res =  gamln_(&x, &ierr);
-  if(ierr>0) cout << "Error: " << ierr << endl;
-  return res;
-}
+// double gamln(double x_)
+// {
+//   f2c::real x = x_;
+//   f2c::integer ierr;
+//   double res =  gamln_(&x, &ierr);
+//   if(ierr>0) cout << "Error: " << ierr << endl;
+//   return res;
+// }
 
 #undef min
 #undef max
 #undef abs
+
+namespace bm = boost::math;
 #include <python_ngstd.hpp>
 PYBIND11_MODULE(special_functions, m) {
-    ExportPythonSpecialCF(m, "Gamma", gamln);
-
-    ExportPythonSpecialCF(m, "Bessel", zbesi,
-           py::arg("z"), py::arg("order")=0, py::arg("kode")=1, py::doc(R"DOCSTRING_(
+  ExportPythonSpecialCF(m,"Gamma",bm::tgamma<double>);
+  
+  ExportPythonSpecialCF(m, "Bessel", zbesi,
+              py::arg("z"), py::arg("order")=0, py::arg("kode")=1, py::doc(R"DOCSTRING_(
 Complex Bessel functions
 Input
   z      - Complex argument
@@ -53,4 +57,5 @@ Input
                    CY=exp(-abs(X))*I(order,z)
                    where X=Re(z)
 )DOCSTRING_"));
+
 }
