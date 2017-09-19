@@ -26,6 +26,7 @@ add_ngsolve_python_module(special_functions
   specialcf.cpp ${SLATEC_SOURCES_C}
 )
 
+target_include_directories(special_functions PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../inc)
 target_link_libraries(special_functions ${F2C_LIBRARY})
 
 install(TARGETS special_functions DESTINATION ngsolve)
