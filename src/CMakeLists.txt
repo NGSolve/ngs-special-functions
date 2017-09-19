@@ -22,7 +22,7 @@ file(DOWNLOAD http://www.netlib.org/blas/r1mach.f ${CMAKE_CURRENT_BINARY_DIR}/sl
 file(DOWNLOAD http://www.netlib.org/blas/d1mach.f ${CMAKE_CURRENT_BINARY_DIR}/slatec/src/d1mach.f)
 
 file(GLOB SLATEC_SOURCES_FORTRAN ${CMAKE_CURRENT_BINARY_DIR}/slatec/src/*.f )
-execute_process(COMMAND ${F2C_COMMAND} ${SLATEC_SOURCES_FORTRAN} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/slatec/src)
+execute_process(COMMAND ${F2C_COMMAND} -a ${SLATEC_SOURCES_FORTRAN} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/slatec/src)
 file(GLOB SLATEC_SOURCES_C ${CMAKE_CURRENT_BINARY_DIR}/slatec/src/*.c )
 
 add_ngsolve_python_module(special_functions
