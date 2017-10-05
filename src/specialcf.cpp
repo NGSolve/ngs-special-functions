@@ -29,6 +29,7 @@ Complex zbesIJK( TFunc func, Complex z, double order, int kode_ )
   return Complex(cyr, cyi);
 }
 
+extern "C" {
 Complex iv ( Complex z, double order) { return zbesIJK(zbesi_, z, order, 1 ); }
 Complex ive( Complex z, double order) { return zbesIJK(zbesi_, z, order, 2 ); }
 Complex jv ( Complex z, double order) { return zbesIJK(zbesj_, z, order, 1 ); }
@@ -36,7 +37,7 @@ Complex jve( Complex z, double order) { return zbesIJK(zbesj_, z, order, 2 ); }
 Complex kv ( Complex z, double order) { return zbesIJK(zbesk_, z, order, 1 ); }
 Complex kve( Complex z, double order) { return zbesIJK(zbesk_, z, order, 2 ); }
 
-double gamln(double x_)
+double gammaln(double x_)
 {
   f2c::real x = x_;
   f2c::integer ierr;
@@ -44,10 +45,11 @@ double gamln(double x_)
   if(ierr>0) cout << "Error: " << ierr << endl;
   return res;
 }
+}
 
 PYBIND11_MODULE(special_functions, m) {
     py::doc doc_string = "Same as in scipy.special";
-    ExportPythonSpecialCF(m, "gammaln", gamln, doc_string);
+    ExportPythonSpecialCF(m, "gammaln", gammaln, doc_string);
 
     py::doc docu = "Same as in scipy.special, except that the order of the arguments is swapped.";
     ExportPythonSpecialCF(m, "iv",  iv,  py::arg("z"), py::arg("order")=0, docu);

@@ -26,13 +26,14 @@ namespace ngfem {
         typedef TRes (*TFunc)(TFirstArg, TArgs...);
 
         TFunc func;
+        string name;
         shared_ptr<CoefficientFunction> arg;
         std::tuple<TFirstArg, TArgs...> parameters;
 
       public:
-        T_SpecialCoefficientFunction( shared_ptr<CoefficientFunction> arg_, TFunc func_, TArgs ... args )
+      T_SpecialCoefficientFunction( shared_ptr<CoefficientFunction> arg_, TFunc func_, string name_, TArgs ... args )
           : CoefficientFunction(1, is_complex),
-            func(func_), arg(arg_), parameters(TFirstArg(), args...)
+            func(func_), name(name_), arg(arg_), parameters(TFirstArg(), args...)
         {
         }
 
@@ -60,12 +61,29 @@ namespace ngfem {
             
         }
 
+      virtual void TraverseTree (const function<void(CoefficientFunction&)> & func) override
+      {
+        arg->TraverseTree (func);
+        func(*this);
+      }
+
+      virtual Array<CoefficientFunction*> InputCoefficientFunctions() const override
+      { return Array<CoefficientFunction*>({ arg.get() }); }
+
+      virtual void GenerateCode(Code & code, FlatArray<int> inputs, int index) const override
+      {
+        string declaration = string("extern ") + string(is_complex ? "Complex " : "double ") + name + " (...);\n";
+        if(code.top.find(declaration) == string::npos)
+          code.top += declaration;
+        code.body += Var(index).Assign( name + "(" + Var(inputs[0]).S() + ", -1)" );
+      }
+
         template<typename ...TPyArgs>
         static void ExportPython( py::module &m, string name, TFunc func, TPyArgs ... py_args )
         {
-            m.def(name.c_str(), [func] (shared_ptr<ngfem::CoefficientFunction> arg, TArgs ... args) -> shared_ptr<ngfem::CoefficientFunction>
+          m.def(name.c_str(), [func,name] (shared_ptr<ngfem::CoefficientFunction> arg, TArgs ... args) -> shared_ptr<ngfem::CoefficientFunction>
                   {
-                  return make_shared<ngfem::T_SpecialCoefficientFunction<TRes(*)(TFirstArg, TArgs...) >>(arg, func, args...);
+                    return make_shared<ngfem::T_SpecialCoefficientFunction<TRes(*)(TFirstArg, TArgs...) >>(arg, func, name, args...);
                   },  py_args...
             );
         }
