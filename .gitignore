@@ -1,2 +1,6 @@
 *.swp
 *.swo
+code*
+.cache
+__pycache__
+build

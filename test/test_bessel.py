@@ -45,6 +45,18 @@ def test_parallel():
             error = ngs.Integrate(g1-g2, mesh)
             assert error == 0j
 
+def test_code_generation():
+    mesh = ngs.Mesh(unit_square.GenerateMesh(maxh=0.2))
+    for order in range(10):
+        functions = [f(ngs.x + 1j*ngs.y, order) for f in fs_ng]
+
+        for f in functions:
+            f_err = f-f.Compile(True, wait=True)
+            f_err = f_err*ngs.Conj(f_err)
+            error = ngs.Integrate(f_err, mesh)
+            assert abs(error)<1e-13
+
 if __name__ == "__main__":
     test_bessel()
     test_parallel()
+    test_code_generation()

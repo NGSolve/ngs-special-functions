@@ -13,12 +13,39 @@ namespace f2c {
 #undef abs
 #include <python_ngstd.hpp>
 
+template<typename T>
+inline string GetTypeName()
+{
+    if constexpr(std::is_same_v<T, double>) return "double";
+    if constexpr(std::is_same_v<T, Complex>) return "Complex";
+}
+
 namespace ngfem {
+
+    template <typename T, typename TFunc>
+    void IterateTuple(const T & t, const TFunc &f)
+    {
+        constexpr size_t n = std::tuple_size_v<T>;
+        static_assert(n < 10, "Increase number of lines in IterateTuple.");
+        if constexpr(n>0) f(std::get<0>(t));
+        if constexpr(n>1) f(std::get<1>(t));
+        if constexpr(n>2) f(std::get<2>(t));
+        if constexpr(n>3) f(std::get<3>(t));
+        if constexpr(n>4) f(std::get<4>(t));
+        if constexpr(n>5) f(std::get<5>(t));
+        if constexpr(n>6) f(std::get<6>(t));
+        if constexpr(n>7) f(std::get<7>(t));
+        if constexpr(n>8) f(std::get<8>(t));
+        if constexpr(n>9) f(std::get<9>(t));
+    }
+
+
     template <typename T> class T_SpecialCoefficientFunction;
 
     template <typename TRes, typename TFirstArg, typename ... TArgs> 
     class T_SpecialCoefficientFunction<TRes(*)(TFirstArg, TArgs...) > : public CoefficientFunction
     {
+        static constexpr int nargs = sizeof...(TArgs)+1;
         static constexpr bool is_complex = std::is_same<Complex, TRes>::value;
         static constexpr bool is_double = std::is_same<double, TRes>::value;
         static_assert(is_complex || is_double, "Result has to be either Complex or double");
@@ -72,10 +99,61 @@ namespace ngfem {
 
       virtual void GenerateCode(Code & code, FlatArray<int> inputs, int index) const override
       {
-        string declaration = string("extern ") + string(is_complex ? "Complex " : "double ") + name + " (...);\n";
-        if(code.top.find(declaration) == string::npos)
-          code.top += declaration;
-        code.body += Var(index).Assign( name + "(" + Var(inputs[0]).S() + ", -1)" );
+        string params = "";
+        int ii = 0;
+        IterateTuple( parameters, [&](auto p) {
+                     if(ii++) // skip first argument
+                     params += ", " + ToString(p);
+               });
+
+
+        if(code.is_simd==false && code.deriv==0)
+        {
+            string declaration = string("extern ") + GetTypeName<TRes>() + " " + name + " (";
+            int ii = 0;
+            IterateTuple( parameters, [&](auto p) {
+                     declaration += (ii++ ? ", " : "") + GetTypeName<decltype(p)>();
+            });
+            declaration += ");\n";
+            if(code.top.find(declaration) == string::npos)
+                code.top += declaration;
+            code.AddLinkFlag(SPECIALCF_LIBRARY_NAME);
+        }
+
+        if(code.is_simd)
+        {
+            auto tmp_real = Var("tmp_real",index);
+            auto tmp_imag = Var("tmp_imag",index);
+            code.body += tmp_real.Declare( "SIMD<double>" );
+            if(is_complex) code.body += Var("tmp_imag",index).Declare( "SIMD<double>" );
+
+            for (int i : Range(SIMD<double>::Size()))
+            {
+              auto tmp = Var("tmp",index,i);
+              string comp = "["+ToLiteral(i)+"]";
+              if(is_complex)
+              {
+                  auto var = Var(inputs[0]).S();
+                  code.body += tmp.Assign( name+"(Complex("+var+".real()"+comp+","+var+".imag()"+comp+")"+params+")" );
+                  code.body += tmp_real.S() + comp + " = " + tmp.S() + ".real();\n";
+                  code.body += tmp_imag.S() + comp + " = " + tmp.S() + ".imag();\n";
+              }
+              else
+              {
+                  code.body += tmp.Assign( name+"("+Var(inputs[0]).S()+comp+params+")" );
+                  code.body += tmp_real.S() + comp + " = " + tmp.S() + ";\n";
+              }
+
+            }
+
+            if(is_complex)
+                code.body += Var(index).Assign( "SIMD<Complex>("+tmp_real.S() + "," + tmp_imag.S() + ")" );
+            else
+                code.body += Var(index).Assign( tmp_real.S() );
+        }
+        else
+            code.body += Var(index).Assign( name+"("+Var(inputs[0]).S()+params+")" );
+
       }
 
         template<typename ...TPyArgs>
