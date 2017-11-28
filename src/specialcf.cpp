@@ -52,10 +52,10 @@ PYBIND11_MODULE(special_functions, m) {
     ExportPythonSpecialCF(m, "gammaln", gammaln, doc_string);
 
     py::doc docu = "Same as in scipy.special, except that the order of the arguments is swapped.";
-    ExportPythonSpecialCF(m, "iv",  iv,  py::arg("z"), py::arg("order")=0, docu);
-    ExportPythonSpecialCF(m, "ive", ive, py::arg("z"), py::arg("order")=0, docu);
-    ExportPythonSpecialCF(m, "jv",  jv,  py::arg("z"), py::arg("order")=0, docu);
-    ExportPythonSpecialCF(m, "jve", jve, py::arg("z"), py::arg("order")=0, docu);
-    ExportPythonSpecialCF(m, "kv",  kv,  py::arg("z"), py::arg("order")=0, docu);
-    ExportPythonSpecialCF(m, "kve", kve, py::arg("z"), py::arg("order")=0, docu);
+    ExportPythonSpecialCF(m, "iv",  iv,  py::arg("z"), py::arg("v")=0, docu);
+    ExportPythonSpecialCF(m, "ive", ive, py::arg("z"), py::arg("v")=0, docu);
+    ExportPythonSpecialCF(m, "jv",  jv,  py::arg("z"), py::arg("v")=0, docu);
+    ExportPythonSpecialCF(m, "jve", jve, py::arg("z"), py::arg("v")=0, docu);
+    ExportPythonSpecialCF(m, "kv",  kv,  py::arg("z"), py::arg("v")=0, docu);
+    ExportPythonSpecialCF(m, "kve", kve, py::arg("z"), py::arg("v")=0, docu);
 }
