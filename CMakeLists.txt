@@ -1,7 +1,7 @@
 include (ExternalProject)
 project(ngs_special_functions_super)
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.8)
 
 find_package(NGSolve CONFIG REQUIRED
   HINTS $ENV{NETGENDIR}/.. /opt/netgen/ /Applications/Netgen.app/Contents/Resources/CMake C:/netgen
@@ -27,11 +27,23 @@ ExternalProject_Add(
   -DF2C_INSTALL_DIR_INCLUDE=${NETGEN_INSTALL_DIR_INCLUDE}
 )
 
+ExternalProject_Add(
+  project_fetch_slatec
+      DOWNLOAD_COMMAND ""
+      CONFIGURE_COMMAND ${CMAKE_COMMAND}
+        -DBIN_DIR=${CMAKE_CURRENT_BINARY_DIR}/specialcf
+        -DNGSOLVE_BINARY_DIR=${NGSOLVE_BINARY_DIR}
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/src/fetch_and_convert_slatec.cmake
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/specialcf/slatec/src
+      BUILD_COMMAND ""
+      INSTALL_COMMAND ""
+)
+
 ################################
 # Build actual project
 ExternalProject_Add(
   project_ngsolve_specialcfs
-  DEPENDS project_f2c
+  DEPENDS project_f2c project_fetch_slatec
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
   BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/specialcf
   CMAKE_ARGS -DNGSolve_DIR=${NGSolve_DIR} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
