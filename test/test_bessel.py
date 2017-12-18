@@ -9,8 +9,11 @@ import pytest
 ngs.ngsglobals.msg_level = 0
 ngs.SetNumThreads(4)
 
-fs_ng = [ng_sp.iv, ng_sp.ive, ng_sp.jv, ng_sp.jve, ng_sp.kv, ng_sp.kve]
-fs_py = [sp.iv, sp.ive, sp.jv, sp.jve, sp.kv, sp.kve]
+fs_ng = [ng_sp.iv, ng_sp.ive, ng_sp.jv, ng_sp.jve, ng_sp.kv, ng_sp.kve,
+         ng_sp.hankel1, ng_sp.hankel1e, ng_sp.hankel2, ng_sp.hankel2e]
+fs_py = [sp.iv, sp.ive, sp.jv, sp.jve, sp.kv, sp.kve,
+         sp.hankel1, sp.hankel1e, sp.hankel2, sp.hankel2e]
+         
 
 def test_bessel():
     mesh = ngs.Mesh(unit_square.GenerateMesh(maxh=0.2))
