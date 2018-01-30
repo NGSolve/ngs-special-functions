@@ -6,6 +6,6 @@ ngsglobals.msg_level = 0
 mesh = Mesh(unit_square.GenerateMesh(maxh=0.2))
 
 import ngsolve.special_functions
-gamma = ngsolve.special_functions.Gamma(x*y+2.1)
+gamma = ngsolve.special_functions.gammaln(x*y+2.1)
 
 Draw(gamma, mesh, 'gammaln')
