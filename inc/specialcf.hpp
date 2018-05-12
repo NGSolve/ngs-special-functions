@@ -94,8 +94,8 @@ namespace ngfem {
         func(*this);
       }
 
-      virtual Array<CoefficientFunction*> InputCoefficientFunctions() const override
-      { return Array<CoefficientFunction*>({ arg.get() }); }
+      virtual Array<shared_ptr<CoefficientFunction>> InputCoefficientFunctions() const override
+      { return Array<shared_ptr<CoefficientFunction>>({ arg }); }
 
       virtual void GenerateCode(Code & code, FlatArray<int> inputs, int index) const override
       {
