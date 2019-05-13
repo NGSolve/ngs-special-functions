@@ -29,6 +29,7 @@ ExternalProject_Add(
 
 ExternalProject_Add(
   project_fetch_slatec
+      DEPENDS project_f2c
       DOWNLOAD_COMMAND ""
       CONFIGURE_COMMAND ${CMAKE_COMMAND}
         -DBIN_DIR=${CMAKE_CURRENT_BINARY_DIR}/specialcf
