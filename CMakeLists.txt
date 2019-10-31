@@ -4,7 +4,7 @@ project(ngs_special_functions_super)
 cmake_minimum_required(VERSION 3.8)
 
 find_package(NGSolve CONFIG REQUIRED
-  HINTS $ENV{NETGENDIR}/.. /opt/netgen/ /Applications/Netgen.app/Contents/Resources/CMake C:/netgen
+  HINTS /usr $ENV{NETGENDIR}/.. /opt/netgen/ /Applications/Netgen.app/Contents/Resources/CMake C:/netgen
 )
 
 # check if CMAKE_INSTALL_PREFIX is set by user, if not install in NGSolve python dir
