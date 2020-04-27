@@ -16,5 +16,8 @@ add_ngsolve_python_module(special_functions
 target_include_directories(special_functions PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../inc)
 target_link_libraries(special_functions PRIVATE ${F2C_LIBRARY})
 target_compile_definitions(special_functions PRIVATE -DSPECIALCF_LIBRARY_NAME="${NETGEN_PYTHON_DIR}/ngsolve/$<TARGET_LINKER_FILE_NAME:special_functions>")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  target_compile_options(special_functions PRIVATE -Wno-return-type-c-linkage)
+endif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 
 install(TARGETS special_functions DESTINATION ngsolve)
