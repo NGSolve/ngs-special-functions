@@ -1,10 +1,22 @@
 include (ExternalProject)
+
+# get command line cmake arguments
+# MUST be done before call to 'project'
+get_cmake_property(vars CACHE_VARIABLES)
+foreach(var ${vars})
+  get_property(currentHelpString CACHE "${var}" PROPERTY HELPSTRING)
+    if("${currentHelpString}" MATCHES "No help, variable specified on the command line." OR "${currentHelpString}" STREQUAL "")
+        # message("${var} = [${${var}}]  --  ${currentHelpString}") # uncomment to see the variables being processed
+        list(APPEND CL_ARGS "-D${var}=${${var}}")
+    endif()
+endforeach()
+
 project(ngs_special_functions_super)
 
 cmake_minimum_required(VERSION 3.8)
 
 find_package(NGSolve CONFIG REQUIRED
-  HINTS $ENV{NETGENDIR}/.. /opt/netgen/ /Applications/Netgen.app/Contents/Resources/CMake C:/netgen
+  HINTS /usr $ENV{NETGENDIR}/.. /opt/netgen/ /Applications/Netgen.app/Contents/Resources/CMake C:/netgen
 )
 
 # check if CMAKE_INSTALL_PREFIX is set by user, if not install in NGSolve python dir
@@ -29,6 +41,7 @@ ExternalProject_Add(
 
 ExternalProject_Add(
   project_fetch_slatec
+      DEPENDS project_f2c
       DOWNLOAD_COMMAND ""
       CONFIGURE_COMMAND ${CMAKE_COMMAND}
         -DBIN_DIR=${CMAKE_CURRENT_BINARY_DIR}/specialcf
@@ -46,6 +59,6 @@ ExternalProject_Add(
   DEPENDS project_f2c project_fetch_slatec
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
   BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/specialcf
-  CMAKE_ARGS -DNGSolve_DIR=${NGSolve_DIR} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+  CMAKE_ARGS -DNGSolve_DIR=${NGSolve_DIR} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} ${CL_ARGS}
   BUILD_ALWAYS 1
   )
