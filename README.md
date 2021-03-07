@@ -1,4 +1,9 @@
-# Getting started
+# Bringing more special functions to NGSolve 
+
+This is an add-on package to NGSolve showing 
+how to bring special functions implemented in 
+http://www.netlib.org/slatec/  into NGSolve's python interface.
+
 
 ## Build/install
 
