@@ -14,5 +14,8 @@ file(DOWNLOAD http://www.netlib.org/blas/i1mach.f ${BIN_DIR}/slatec/src/i1mach.f
 file(DOWNLOAD http://www.netlib.org/blas/r1mach.f ${BIN_DIR}/slatec/src/r1mach.f)
 file(DOWNLOAD http://www.netlib.org/blas/d1mach.f ${BIN_DIR}/slatec/src/d1mach.f)
 
+file(DOWNLOAD http://ab-initio.mit.edu/Faddeeva.cc ${BIN_DIR}/Faddeeva/Faddeeva.cc)
+file(DOWNLOAD http://ab-initio.mit.edu/Faddeeva.hh ${BIN_DIR}/Faddeeva/Faddeeva.hh)
+
 file(GLOB SLATEC_SOURCES_FORTRAN ${BIN_DIR}/slatec/src/*.f )
 execute_process(COMMAND ${F2C_COMMAND} -a ${SLATEC_SOURCES_FORTRAN} WORKING_DIRECTORY ${BIN_DIR}/slatec/src)
