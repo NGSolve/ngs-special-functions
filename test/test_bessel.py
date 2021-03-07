@@ -31,6 +31,25 @@ def test_bessel():
                     assert error < 1e-13
 
 
+def test_errfns():
+    efng = [ng_sp.erf, ng_sp.erfc, ng_sp.wofz, ng_sp.erfcx, ng_sp.erfi]
+    efsc = [sp.erf, sp.erfc, sp.wofz, sp.erfcx, sp.erfi]
+
+    mesh = ngs.Mesh(unit_square.GenerateMesh(maxh=0.2))
+    functions = [(f1(ngs.x + 1j*ngs.y), f2)
+                 for f1, f2 in zip(efng, efsc)]
+
+    for f_ng, f_py in functions:
+        for x in numpy.linspace(0.1, 0.9, 20):
+            for y in numpy.linspace(0.1, 0.9, 20):
+                v1 = f_ng(mesh(x, y))
+                v2 = f_py(x+1j*y)
+                error = abs(v1 - v2)
+                if abs(v2) > 1:
+                    error = abs(error/v2)
+                assert error < 1e-13
+
+
 def test_parallel():
     mesh = ngs.Mesh(unit_square.GenerateMesh(maxh=0.2))
     fes = ngs.L2(mesh, order=5, complex=True)
@@ -63,5 +82,6 @@ def test_code_generation():
 
 if __name__ == "__main__":
     test_bessel()
+    test_errfns()
     test_parallel()
     test_code_generation()
