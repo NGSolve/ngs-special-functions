@@ -1,4 +1,5 @@
 #include <specialcf.hpp>
+#include <Faddeeva.hh>
 
 extern "C" {
 int zbesi_(f2c::doublereal *zr, f2c::doublereal *zi, const f2c::doublereal *fnu, const f2c::integer *kode, const f2c::integer *n, f2c::doublereal *cyr, f2c::doublereal *cyi, f2c::integer * nz, f2c::integer *ierr);
@@ -80,8 +81,20 @@ double gammaln(double x_)
 }
 
 
-
 }
+
+namespace ngfem {
+  
+  Complex wofz(Complex z) {return Faddeeva::w(std::complex<double>(z));}
+  Complex erf(Complex z) {return Faddeeva::erf(std::complex<double>(z));}  
+  Complex erfc(Complex z) {return Faddeeva::erfc(std::complex<double>(z));}  
+  Complex erfcx(Complex z) {return Faddeeva::erfcx(std::complex<double>(z));}  
+  Complex erfi(Complex z) {return Faddeeva::erfi(std::complex<double>(z));}  
+  Complex dawsn(Complex z) {return Faddeeva::Dawson(std::complex<double>(z));}  
+  
+}
+
+
 
 PYBIND11_MODULE(special_functions, m) {
     py::doc doc_string = "Same as in scipy.special";
@@ -103,4 +116,12 @@ PYBIND11_MODULE(special_functions, m) {
 			  docu);
     ExportPythonSpecialCF(m, "hankel2e", hankel2e, py::arg("z"), py::arg("v")=0,
 			  docu);
+
+    ExportPythonSpecialCF(m, "wofz",  ngfem::wofz,  py::arg("z"), doc_string);
+    ExportPythonSpecialCF(m, "erf",   ngfem::erf,   py::arg("z"), doc_string);
+    ExportPythonSpecialCF(m, "erfc",  ngfem::erfc,  py::arg("z"), doc_string);
+    ExportPythonSpecialCF(m, "erfcx", ngfem::erfcx, py::arg("z"), doc_string);
+    ExportPythonSpecialCF(m, "erfi",  ngfem::erfi,  py::arg("z"), doc_string);
+    ExportPythonSpecialCF(m, "dawsn", ngfem::dawsn, py::arg("z"), doc_string);
+
 }

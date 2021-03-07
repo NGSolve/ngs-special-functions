@@ -1,4 +1,12 @@
-# Getting started
+# Bringing more special functions to NGSolve 
+
+This is an add-on package to NGSolve, which shows
+how to bring special functions implemented elsewhere into 
+NGSolve's python interface. We bring in the Bessel and Hankel
+function implementations of the [Slatec package](http://www.netlib.org/slatec/) 
+and the error function implementation from the 
+[Faddeeva package](http://ab-initio.mit.edu/wiki/index.php/Faddeeva_Package).
+
 
 ## Build/install
 
@@ -21,7 +29,7 @@ netgen gammaln.py
 
 ## Extend
 
-You can extend by adding further functions from slatec. Follow these steps: 
+To extend by adding further functions from Slatec,  follow these steps: 
 
 1. In `src/fetch_and_convert_slatec.cmake` add an additional line: `fetch_and_convert_slatec_sources(<what_you_want_to_add>)`
 2. Modify `src/specialcf.cpp` to recognize the additional function.
