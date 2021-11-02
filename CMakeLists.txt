@@ -30,7 +30,7 @@ endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 ExternalProject_Add(
   project_f2c
   PREFIX ${CMAKE_CURRENT_BINARY_DIR}/f2c
-  GIT_REPOSITORY git://github.com/mhochsteger/f2c.git
+  GIT_REPOSITORY https://github.com/mhochsteger/f2c.git
   GIT_TAG 747683f
   CMAKE_ARGS
   -DCMAKE_INSTALL_PREFIX=${NGSOLVE_INSTALL_DIR}
