@@ -13,6 +13,7 @@ endforeach()
 
 project(ngs_special_functions_super)
 
+
 cmake_minimum_required(VERSION 3.8)
 
 find_package(NGSolve CONFIG REQUIRED
@@ -37,6 +38,7 @@ ExternalProject_Add(
   -DF2C_INSTALL_DIR_BIN=${NETGEN_INSTALL_DIR_BIN}
   -DF2C_INSTALL_DIR_LIB=${NETGEN_INSTALL_DIR_LIB}
   -DF2C_INSTALL_DIR_INCLUDE=${NETGEN_INSTALL_DIR_INCLUDE}
+  -DCMAKE_C_FLAGS="-Wno-implicit-function-declaration"
 )
 
 ExternalProject_Add(
@@ -59,6 +61,6 @@ ExternalProject_Add(
   DEPENDS project_f2c project_fetch_slatec
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
   BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/specialcf
-  CMAKE_ARGS -DNGSolve_DIR=${NGSolve_DIR} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} ${CL_ARGS}
+  CMAKE_ARGS -DNGSolve_DIR=${NGSolve_DIR} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} ${CL_ARGS} -DCMAKE_C_FLAGS="-Wno-implicit-function-declaration"
   BUILD_ALWAYS 1
   )
