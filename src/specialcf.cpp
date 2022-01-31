@@ -97,10 +97,10 @@ namespace ngfem {
 
 
 PYBIND11_MODULE(special_functions, m) {
-    py::doc doc_string = "Same as in scipy.special";
+    const char * doc_string = "Same as in scipy.special";
     ExportPythonSpecialCF(m, "gammaln", gammaln, doc_string);
 
-    py::doc docu = "Same as in scipy.special, except that the order of the arguments is swapped.";
+    const char * docu = "Same as in scipy.special, except that the order of the arguments is swapped.";
     ExportPythonSpecialCF(m, "iv",  iv,  py::arg("z"), py::arg("v")=0, docu);
     ExportPythonSpecialCF(m, "ive", ive, py::arg("z"), py::arg("v")=0, docu);
     ExportPythonSpecialCF(m, "jv",  jv,  py::arg("z"), py::arg("v")=0, docu);
