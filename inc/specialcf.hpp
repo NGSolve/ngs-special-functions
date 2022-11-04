@@ -134,7 +134,11 @@ namespace ngfem {
               if(is_complex)
               {
                   auto var = Var(inputs[0]).S();
-                  code.body += tmp.Assign( name+"(Complex("+var+".real()"+comp+","+var+".imag()"+comp+")"+params+")" );
+                  if (arg->IsComplex())
+                    code.body += tmp.Assign( name+"(Complex("+var+".real()"+comp+","+var+".imag()"+comp+")"+params+")" );
+                  else
+                    code.body += tmp.Assign( name+"(Complex("+var+comp+")"+params+")" );
+                    
                   code.body += tmp_real.S() + comp + " = " + tmp.S() + ".real();\n";
                   code.body += tmp_imag.S() + comp + " = " + tmp.S() + ".imag();\n";
               }
