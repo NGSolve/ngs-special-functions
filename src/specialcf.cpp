@@ -96,7 +96,7 @@ namespace ngfem {
 
 
 
-PYBIND11_MODULE(special_functions, m) {
+PYBIND11_MODULE(ngsolve_special_functions, m) {
     const char * doc_string = "Same as in scipy.special";
     ExportPythonSpecialCF(m, "gammaln", gammaln, doc_string);
 
