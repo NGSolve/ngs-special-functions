@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.28)
 
 include(FetchContent)
 
@@ -9,15 +9,22 @@ include(ngsolve_addon.cmake)
 FetchContent_Declare(
   f2c
   GIT_REPOSITORY https://github.com/mhochsteger/f2c.git
-  GIT_TAG 747683f
+  GIT_TAG 96c2fbf
+  EXCLUDE_FROM_ALL
 )
 
 FetchContent_MakeAvailable(f2c)
 
-target_compile_options(f2c_exe PRIVATE -Wno-implicit-function-declaration)
+if(UNIX)
+  target_compile_options(f2c_exe PRIVATE -Wno-implicit-function-declaration)
+endif()
 
 get_target_property(F2C_DIR f2c_exe BINARY_DIR)
-set(F2C_COMMAND ${F2C_DIR}/f2c)
+if(WIN32)
+  set(F2C_COMMAND ${F2C_DIR}/Release/f2c.exe)
+else()
+  set(F2C_COMMAND ${F2C_DIR}/f2c)
+endif()
 
 set(BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/specialcf)
 
@@ -53,16 +60,20 @@ add_custom_target(convert_sources ALL
   COMMAND ${CMAKE_COMMAND} -E make_directory ${BIN_DIR}/slatec/src
   COMMAND ${F2C_COMMAND} -a ${SLATEC_SOURCES_FORTRAN} WORKING_DIRECTORY ${BIN_DIR}/slatec/src
   BYPRODUCTS ${SLATEC_SOURCES_C}
+  USES_TERMINAL
 )
 
-add_ngsolve_addon(_ngsolve_special_functions src/specialcf.cpp ${SLATEC_SOURCES_C}  ${CMAKE_CURRENT_BINARY_DIR}/specialcf/Faddeeva/Faddeeva.cc)
-add_custom_target(_ngsolve_special_functions_convert ALL DEPENDS convert_sources)
-target_sources(_ngsolve_special_functions PRIVATE ${SLATEC_SOURCES_C})
-target_include_directories(_ngsolve_special_functions PRIVATE ${BIN_DIR}/slatec/src ${BIN_DIR}/Faddeeva inc)
-target_compile_definitions(_ngsolve_special_functions PRIVATE -DSPECIALCF_LIBRARY_NAME="$<TARGET_LINKER_FILE_NAME:_ngsolve_special_functions>")
-target_compile_options(_ngsolve_special_functions PRIVATE -Wno-implicit-function-declaration)
-install(TARGETS _ngsolve_special_functions DESTINATION ${ADDON_INSTALL_DIR}/ngsolve_special_functions)
+add_ngsolve_addon(ngsolve_special_functions src/specialcf.cpp ${SLATEC_SOURCES_C}  ${CMAKE_CURRENT_BINARY_DIR}/specialcf/Faddeeva/Faddeeva.cc)
+add_custom_target(ngsolve_special_functions_convert ALL DEPENDS convert_sources)
+target_sources(ngsolve_special_functions PRIVATE ${SLATEC_SOURCES_C})
+target_include_directories(ngsolve_special_functions PRIVATE ${BIN_DIR}/slatec/src ${BIN_DIR}/Faddeeva inc ${f2c_SOURCE_DIR}/include ${f2c_BINARY_DIR})
+target_compile_definitions(ngsolve_special_functions PRIVATE -DSPECIALCF_LIBRARY_NAME="$<TARGET_LINKER_FILE_NAME:ngsolve_special_functions>")
+if(UNIX)
+  target_compile_options(ngsolve_special_functions PRIVATE -Wno-implicit-function-declaration)
+endif()
+target_link_libraries(ngsolve_special_functions PRIVATE f2c)
+install(TARGETS ngsolve_special_functions DESTINATION ${ADDON_INSTALL_DIR_PYTHON})
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  target_compile_options(_ngsolve_special_functions PRIVATE -Wno-return-type-c-linkage)
+  target_compile_options(ngsolve_special_functions PRIVATE -Wno-return-type-c-linkage)
 endif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 
