@@ -16,8 +16,8 @@ git clone https://github.com/NGSolve/ngs-special-functions.git
 cd ngs-special-functions
 mkdir build && cd build
 cmake ..
-# automatically installs during build to your NGSolve installation
-make -j4 
+make 
+make install
 cd ..
 ```
 

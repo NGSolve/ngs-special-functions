@@ -11,6 +11,7 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/mhochsteger/f2c.git
   GIT_TAG 96c2fbf
   EXCLUDE_FROM_ALL
+  PATCH_COMMAND sed -i '' "s/VERSION 3\\.1/VERSION 3.5/" CMakeLists.txt
 )
 
 FetchContent_MakeAvailable(f2c)
@@ -76,4 +77,3 @@ install(TARGETS ngsolve_special_functions DESTINATION ${ADDON_INSTALL_DIR_PYTHON
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   target_compile_options(ngsolve_special_functions PRIVATE -Wno-return-type-c-linkage)
 endif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-
