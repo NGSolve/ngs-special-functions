@@ -9,9 +9,8 @@ include(ngsolve_addon.cmake)
 FetchContent_Declare(
   f2c
   GIT_REPOSITORY https://github.com/mhochsteger/f2c.git
-  GIT_TAG 96c2fbf
+  GIT_TAG 7eab353161775b1c64bbe9aaa0e820881acd5873
   EXCLUDE_FROM_ALL
-  PATCH_COMMAND sed -i '' "s/VERSION 3\\.1/VERSION 3.5/" CMakeLists.txt
 )
 
 FetchContent_MakeAvailable(f2c)
